@@ -972,6 +972,7 @@ AppstreamIssueType _parseIssueType(String typeName) {
 AppstreamDBusType _parseDBusType(String typeName) {
   var type = {
     'user': AppstreamDBusType.user,
+    'session': AppstreamDBusType.session,
     'system': AppstreamDBusType.system
   }[typeName];
   if (type == null) {
