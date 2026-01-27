@@ -440,7 +440,7 @@ void main() {
         }));
   });
 
-test('collection - bundles - xml', () async {
+  test('collection - bundles - xml', () async {
     var collection = AppstreamCollection.fromXml(
         '''<components version="0.12" origin="ubuntu-hirsute-main">
   <component type="console-application">
@@ -458,6 +458,31 @@ test('collection - bundles - xml', () async {
         component.bundles,
         equals([
           AppstreamBundle('foobar-1.0.2', type: AppstreamBundleType.limba),
+        ]));
+  });
+
+  test('collection - custom - xml', () async {
+    var collection = AppstreamCollection.fromXml(
+        '''<components version="0.12" origin="ubuntu-hirsute-main">
+  <component type="console-application">
+    <id>com.example.Hello</id>
+    <pkgname>hello</pkgname>
+    <name>Hello World</name>
+    <summary>A simple example application</summary>
+    <custom>
+      <value key="MyCorp::app_color">#FF0000</value>
+      <value key="MyCorp::special_id">284fd262-6870-42a6-89a4-b189d3109e3e</value>
+    </custom>
+  </component>
+</components>
+''');
+    expect(collection.components, hasLength(1));
+    var component = collection.components[0];
+    expect(
+        component.custom,
+        equals([
+          {'MyCorp::app_color': '#FF0000'},
+          {'MyCorp::special_id': '284fd262-6870-42a6-89a4-b189d3109e3e'},
         ]));
   });
 
@@ -1086,6 +1111,33 @@ Bundles:
         component.bundles,
         equals([
           AppstreamBundle('foobar-1.0.2', type: AppstreamBundleType.limba),
+        ]));
+  });
+
+  test('collection - custom - yaml', () async {
+    var collection = AppstreamCollection.fromYaml("""---
+File: DEP-11
+Version: '0.12'
+Origin: ubuntu-hirsute-main
+---
+Type: console-application
+ID: com.example.Hello
+Package: hello
+Name:
+  C: Hello World
+Summary:
+  C: A simple example application
+Custom:
+  - MyCorp::app_color: '#FF0000'
+  - MyCorp::special_id: 284fd262-6870-42a6-89a4-b189d3109e3e
+""");
+    expect(collection.components, hasLength(1));
+    var component = collection.components[0];
+    expect(
+        component.custom,
+        equals([
+          {'MyCorp::app_color': '#FF0000'},
+          {'MyCorp::special_id': '284fd262-6870-42a6-89a4-b189d3109e3e'},
         ]));
   });
 }
